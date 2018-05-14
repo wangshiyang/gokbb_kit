@@ -7,13 +7,13 @@ import (
 )
 
 type LoggingMiddleware struct {
-	logger log.Logger
-	next   services.StringService
+	Logger log.Logger
+	Next   services.StringService
 }
 
 func (mw LoggingMiddleware) Uppercase(s string) (output string, err error) {
 	defer func(begin time.Time) {
-		_ = mw.logger.Log(
+		_ = mw.Logger.Log(
 			"method", "uppercase",
 			"input", s,
 			"output", output,
@@ -22,13 +22,13 @@ func (mw LoggingMiddleware) Uppercase(s string) (output string, err error) {
 		)
 	}(time.Now())
 
-	output, err = mw.next.Uppercase(s)
+	output, err = mw.Next.Uppercase(s)
 	return
 }
 
 func (mw LoggingMiddleware) Count(s string) (count int) {
 	defer func(begin time.Time) {
-		_ = mw.logger.Log(
+		_ = mw.Logger.Log(
 			"method", "count",
 			"input", s,
 			"n", count,
@@ -36,6 +36,6 @@ func (mw LoggingMiddleware) Count(s string) (count int) {
 		)
 	}(time.Now())
 
-	count = mw.next.Count(s)
+	count = mw.Next.Count(s)
 	return
 }
