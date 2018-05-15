@@ -7,15 +7,29 @@ import (
 	"shawn/gokbb_kit/transports"
 	"net/http"
 	"shawn/gokbb_kit/services"
-	"github.com/go-kit/kit/log"
+	log "github.com/go-kit/kit/log"
 	"os"
 	"shawn/gokbb_kit/common/util"
 	"shawn/gokbb_kit/middleware/metrics"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/nats-io/go-nats"
+	"flag"
+	log2 "log"
 )
 
 func main() {
 	logger := log.NewLogfmtLogger(os.Stderr)
+
+	natsURL := flag.String("nats-url", nats.DefaultURL, "URL for connection to NATS")
+	flag.Parse()
+
+	nc, err := nats.Connect(*natsURL)
+
+	if err != nil {
+		log2.Fatal(err)
+	}
+
+	defer nc.Close()
 
 	fieldKeys := []string{"method", "error"}
 	requestCount := kitprometheus.NewCounterFrom(stdprometheus.CounterOpts{
